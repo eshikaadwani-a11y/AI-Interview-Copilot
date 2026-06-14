@@ -172,3 +172,56 @@ export interface MatchDetail {
   recommendations: RecommendationItem[];
   created_at: string;
 }
+
+
+// ── Mentor types (Milestone 8) ────────────────────────────────
+
+export interface Citation {
+  source_type: string;
+  source_id: string;
+  title: string | null;
+  snippet: string;
+  score: number;
+}
+
+export interface MentorAnswer {
+  answer: string;
+  provider: string;
+  citations: Citation[];
+}
+
+export interface ResumeFeedback {
+  overall_summary: string;
+  strengths: string[];
+  missing_sections: string[];
+  suggestions: string[];
+  provider: string;
+}
+
+export interface RoadmapResource {
+  title: string;
+  url: string;
+}
+
+export interface RoadmapWeek {
+  week: number;
+  focus: string;
+  skills: string[];
+  resources: RoadmapResource[];
+}
+
+export interface Roadmap {
+  id: string;
+  match_id: string;
+  job_title: string | null;
+  target_fit_score: number | null;
+  weeks: RoadmapWeek[];
+  created_at: string;
+}
+
+export interface IngestResponse {
+  source_type: string;
+  source_id: string;
+  title: string | null;
+  indexed_chunks: number;
+}
