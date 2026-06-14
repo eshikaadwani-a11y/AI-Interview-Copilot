@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {
+  Briefcase,
   FileSearch,
   GitCompare,
   GraduationCap,
@@ -20,6 +21,13 @@ const upcoming = [
     description: "Upload your resume to extract a structured profile.",
     milestone: "Available",
     href: "/resume",
+  },
+  {
+    icon: Briefcase,
+    title: "Job Description Analysis",
+    description: "Extract required vs preferred skills and responsibilities from a JD.",
+    milestone: "Available",
+    href: "/jobs",
   },
   {
     icon: GitCompare,

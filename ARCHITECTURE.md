@@ -132,7 +132,8 @@ UI state; Recharts for analytics; Framer Motion for transitions.
 - [x] **M1 — Foundation:** Next.js + FastAPI + MongoDB wiring + Docker + structure
 - [x] **M2 — Authentication:** JWT register/login, protected routes, `/auth/me`
 - [x] **M3 — Resume upload + parsing:** PDF upload, deterministic parser, structured profile UI
-- [ ] M4 — Job description analysis
+- [x] **M4 — Job description analysis:** JD parser (required/preferred skills, responsibilities, seniority), structured viewer
+- [ ] M5 — ML pipeline
 - [ ] M5 — ML pipeline
 - [ ] M6 — Matching engine
 - [ ] M7 — RAG system
