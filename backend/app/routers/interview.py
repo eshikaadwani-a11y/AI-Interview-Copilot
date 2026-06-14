@@ -7,6 +7,7 @@ from typing import List
 from fastapi import APIRouter, status
 
 from app.core.deps import CurrentUser
+from app.models.evaluation import InterviewReport
 from app.models.interview import (
     AnswerRequest,
     InterviewDetail,
@@ -14,7 +15,7 @@ from app.models.interview import (
     InterviewState,
     InterviewSummary,
 )
-from app.services import interview_service
+from app.services import evaluation_service, interview_service
 
 router = APIRouter(prefix="/interview", tags=["interview"])
 
@@ -47,3 +48,15 @@ async def list_interviews(current_user: CurrentUser) -> List[InterviewSummary]:
 async def get_interview(interview_id: str, current_user: CurrentUser) -> InterviewDetail:
     """Get the full interview transcript."""
     return await interview_service.get_interview(current_user.id, interview_id)
+
+
+@router.post("/{interview_id}/evaluate", response_model=InterviewReport)
+async def evaluate(interview_id: str, current_user: CurrentUser) -> InterviewReport:
+    """Score every answer and predict interview success (Model 2)."""
+    return await evaluation_service.evaluate_interview(current_user.id, interview_id)
+
+
+@router.get("/{interview_id}/report", response_model=InterviewReport)
+async def report(interview_id: str, current_user: CurrentUser) -> InterviewReport:
+    """Get the interview performance report."""
+    return await evaluation_service.get_report(current_user.id, interview_id)

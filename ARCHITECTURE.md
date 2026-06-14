@@ -59,8 +59,17 @@ matches. (Full field-level schema defined per milestone in `app/models`.)
   education match, project relevance, certification relevance, seniority gap,
   preferred-skill overlap. Outputs: fit score, calibrated interview probability,
   recommendation bucket. SHAP `TreeExplainer` for per-prediction explanations.
-- **Model 2 — Interview Success Predictor:** classifier over resume/match
-  features + mock-interview scores → success probability.
+- **Model 2 — Interview Success Predictor:** classifier over three signal
+  groups — **interview scores** (technical/communication/completeness/confidence/
+  overall + completion), **match score** (Model 1 output), and **resume features**
+  (experience, skill breadth) → success probability. Persists model version,
+  prediction confidence, feature importance, and per-prediction contributions
+  ("why this prediction").
+- **Answer evaluation** is a pluggable **evaluator registry** (`ANSWER_EVALUATORS`):
+  `text` today; `coding` (run tests, correctness/complexity) and `voice`
+  (transcribe + prosody/fluency dimensions) register into the same report
+  pipeline. Interviews carry `interview_type` and optional `company`, so
+  company-specific interview templates slot in without schema changes.
 - **Evaluation:** stratified split + CV; Accuracy, Precision, Recall, F1,
   ROC-AUC, confusion matrix; persisted to the model registry.
 
@@ -138,7 +147,8 @@ UI state; Recharts for analytics; Framer Motion for transitions.
 - [x] **M7 — RAG system:** LLM provider abstraction (OpenAI/Anthropic + local fallback), local/OpenAI embeddings, ChromaDB + in-memory store, chunking, grounded retrieval, `/rag` API
 - [x] **M8 — AI mentor:** resume feedback, learning roadmap generation (persisted), RAG-grounded mentor chat, mentor UI
 - [x] **M9 — Interview simulator:** question bank, mode/category selection, dynamic follow-ups, session state machine, chat-style interview UI
-- [ ] M10 — Interview evaluation
+- [x] **M10 — Interview evaluation:** per-answer rubric scoring, Interview Success Predictor (Model 2), performance report + success-probability UI
+- [ ] M11 — Analytics dashboard
 - [ ] M5 — ML pipeline
 - [ ] M6 — Matching engine
 - [ ] M7 — RAG system

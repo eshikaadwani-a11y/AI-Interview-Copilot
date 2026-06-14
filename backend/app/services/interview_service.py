@@ -67,6 +67,8 @@ async def start_interview(user_id: str, payload: InterviewStart) -> InterviewSta
     doc = {
         "user_id": user_id,
         "mode": payload.mode,
+        "interview_type": payload.interview_type,
+        "company": payload.company,
         "categories": interview_bank.resolve_categories(payload.mode, payload.categories),
         "resume_id": payload.resume_id,
         "job_id": payload.job_id,

@@ -280,3 +280,73 @@ export interface InterviewStartPayload {
   resume_id?: string | null;
   job_id?: string | null;
 }
+
+
+// ── Evaluation types (Milestone 10) ───────────────────────────
+
+export interface AnswerEvaluation {
+  technical: number;
+  communication: number;
+  completeness: number;
+  confidence: number;
+  score: number;
+  matched_concepts: string[];
+  missed_concepts: string[];
+  explanations: Record<string, string[]>;
+  strengths: string[];
+  weaknesses: string[];
+  suggestions: string[];
+}
+
+export interface EvaluatedQuestion {
+  index: number;
+  category: string;
+  type: string;
+  question: string;
+  answer: string | null;
+  evaluation: AnswerEvaluation | null;
+}
+
+export interface AggregateScores {
+  technical: number;
+  communication: number;
+  completeness: number;
+  confidence: number;
+  overall: number;
+}
+
+export interface FeatureContribution {
+  feature: string;
+  label: string;
+  value: number;
+  contribution: number;
+}
+
+export interface LearningItem {
+  topic: string;
+  title: string;
+  url: string;
+}
+
+export interface InterviewReport {
+  interview_id: string;
+  mode_label: string;
+  status: string;
+  answered: number;
+  total: number;
+  aggregate: AggregateScores;
+  category_scores: Record<string, number>;
+  success_probability: number;
+  success_label: string;
+  prediction_confidence: number;
+  model_backend: string;
+  model_version: string | null;
+  success_explanation: FeatureContribution[];
+  feature_importance: Record<string, unknown>[];
+  per_question: EvaluatedQuestion[];
+  strengths: string[];
+  weaknesses: string[];
+  suggestions: string[];
+  recommended_learning: LearningItem[];
+  created_at: string;
+}

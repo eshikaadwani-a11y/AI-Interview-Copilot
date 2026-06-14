@@ -2,7 +2,7 @@
 
 import { useMutation } from "@tanstack/react-query";
 import { api, type ApiError } from "@/lib/api";
-import type { InterviewState, InterviewStartPayload } from "@/lib/types";
+import type { InterviewReport, InterviewState, InterviewStartPayload } from "@/lib/types";
 
 /** Start a new interview session. */
 export function useStartInterview() {
@@ -29,6 +29,16 @@ export function useFinishInterview() {
   return useMutation<InterviewState, ApiError, string>({
     mutationFn: async (id) => {
       const { data } = await api.post<InterviewState>(`/interview/${id}/finish`);
+      return data;
+    },
+  });
+}
+
+/** Evaluate a completed interview and return the performance report. */
+export function useEvaluateInterview() {
+  return useMutation<InterviewReport, ApiError, string>({
+    mutationFn: async (id) => {
+      const { data } = await api.post<InterviewReport>(`/interview/${id}/evaluate`);
       return data;
     },
   });
