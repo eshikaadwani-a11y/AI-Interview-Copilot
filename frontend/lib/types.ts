@@ -24,3 +24,62 @@ export interface LoginPayload {
   email: string;
   password: string;
 }
+
+
+// ── Resume types (Milestone 3) ────────────────────────────────
+
+export interface Contact {
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  links: string[];
+}
+
+export interface ExperienceItem {
+  title: string | null;
+  company: string | null;
+  start: string | null;
+  end: string | null;
+  months: number;
+  bullets: string[];
+}
+
+export interface EducationItem {
+  degree: string | null;
+  institution: string | null;
+  year: number | null;
+  gpa: string | null;
+}
+
+export interface ProjectItem {
+  name: string;
+  description: string | null;
+  tech: string[];
+  bullets: string[];
+}
+
+export interface ResumeProfile {
+  contact: Contact;
+  summary: string | null;
+  skills: string[];
+  experience: ExperienceItem[];
+  education: EducationItem[];
+  projects: ProjectItem[];
+  certifications: string[];
+  total_experience_months: number;
+}
+
+export interface ResumeSummary {
+  id: string;
+  filename: string;
+  skill_count: number;
+  total_experience_months: number;
+  created_at: string;
+}
+
+export interface ResumeDetail {
+  id: string;
+  filename: string;
+  profile: ResumeProfile;
+  created_at: string;
+}

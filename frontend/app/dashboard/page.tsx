@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   FileSearch,
   GitCompare,
@@ -17,25 +18,29 @@ const upcoming = [
     icon: FileSearch,
     title: "Resume Analysis",
     description: "Upload your resume to extract a structured profile.",
-    milestone: "Milestone 3",
+    milestone: "Available",
+    href: "/resume",
   },
   {
     icon: GitCompare,
     title: "Candidate Matching",
     description: "Compare your resume to a job description with real ML scoring.",
     milestone: "Milestone 5–6",
+    href: null,
   },
   {
     icon: GraduationCap,
     title: "Learning Roadmap",
     description: "Get a personalized plan to close your skill gaps.",
     milestone: "Milestone 8",
+    href: null,
   },
   {
     icon: MessagesSquare,
     title: "AI Interview Simulator",
     description: "Practice realistic interviews with dynamic follow-ups.",
     milestone: "Milestone 9",
+    href: null,
   },
 ];
 
@@ -56,22 +61,33 @@ function DashboardContent() {
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
-          {upcoming.map((item) => (
-            <Card key={item.title}>
-              <CardHeader className="flex flex-row items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
-                    <item.icon className="h-5 w-5" />
-                  </span>
-                  <CardTitle className="text-base">{item.title}</CardTitle>
-                </div>
-                <Badge>{item.milestone}</Badge>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>{item.description}</CardDescription>
-              </CardContent>
-            </Card>
-          ))}
+          {upcoming.map((item) => {
+            const card = (
+              <Card
+                className={item.href ? "h-full cursor-pointer transition-colors hover:border-primary/40" : "h-full"}
+              >
+                <CardHeader className="flex flex-row items-start justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                      <item.icon className="h-5 w-5" />
+                    </span>
+                    <CardTitle className="text-base">{item.title}</CardTitle>
+                  </div>
+                  <Badge tone={item.href ? "success" : "default"}>{item.milestone}</Badge>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>{item.description}</CardDescription>
+                </CardContent>
+              </Card>
+            );
+            return item.href ? (
+              <Link key={item.title} href={item.href}>
+                {card}
+              </Link>
+            ) : (
+              <div key={item.title}>{card}</div>
+            );
+          })}
         </div>
       </main>
     </div>
