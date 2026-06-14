@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dark-first palette (HSL channels for Tailwind alpha support). */
+  --background: 224 24% 6%;
+  --surface: 225 20% 9%;
+  --surface-2: 225 18% 12%;
+  --border: 225 14% 18%;
+  --foreground: 210 30% 96%;
+  --muted: 220 12% 60%;
+  --primary: 250 90% 66%;
+  --primary-foreground: 0 0% 100%;
+  --accent: 190 90% 55%;
+  --success: 150 65% 48%;
+  --warning: 38 92% 58%;
+  --danger: 0 80% 62%;
+
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+html,
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: var(--font-sans);
+}
+
+/* Subtle gradient mesh used on hero/marketing surfaces. */
+.bg-mesh {
+  background-image:
+    radial-gradient(40rem 40rem at 80% -10%, hsl(var(--primary) / 0.18), transparent 60%),
+    radial-gradient(30rem 30rem at 0% 10%, hsl(var(--accent) / 0.12), transparent 55%);
+}
+
+/* Thin, modern scrollbar. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted) / 0.6);
+}
