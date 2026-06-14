@@ -10,7 +10,7 @@ from __future__ import annotations
 from functools import lru_cache
 from typing import List
 
-from pydantic import Field, field_validator
+from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -35,7 +35,10 @@ class Settings(BaseSettings):
     port: int = 8000
 
     # ── CORS ──────────────────────────────────────────────────
-    cors_origins: List[str] = Field(default=["http://localhost:3000"])
+    # Stored as a plain string (comma-separated) to avoid pydantic-settings'
+    # automatic JSON decoding of list-typed env vars (which fails on a non-JSON
+    # value like "http://localhost:3000"). Use ``cors_origins_list`` to read it.
+    cors_origins: str = Field(default="http://localhost:3000")
 
     # ── MongoDB ───────────────────────────────────────────────
     mongodb_uri: str = Field(default="mongodb://localhost:27017")
@@ -51,10 +54,10 @@ class Settings(BaseSettings):
     chroma_collection: str = Field(default="aic_documents")
 
     # ── Embeddings ────────────────────────────────────────────
-    # "local" uses sentence-transformers (offline friendly);
+    # "local" uses a dependency-free hashing embedder (offline friendly);
     # "openai" uses the OpenAI embeddings API when a key is present.
     embedding_provider: str = Field(default="local")
-    embedding_model_local: str = "all-MiniLM-L6-v2"
+    embedding_model_local: str = "local-hash-256"
     embedding_model_openai: str = "text-embedding-3-small"
 
     # ── LLM providers ─────────────────────────────────────────
@@ -73,13 +76,10 @@ class Settings(BaseSettings):
     upload_dir: str = Field(default="./uploads")
     max_upload_mb: int = 10
 
-    @field_validator("cors_origins", mode="before")
-    @classmethod
-    def _split_cors(cls, value: object) -> object:
-        """Allow CORS origins as a comma-separated string in env files."""
-        if isinstance(value, str):
-            return [origin.strip() for origin in value.split(",") if origin.strip()]
-        return value
+    @property
+    def cors_origins_list(self) -> List[str]:
+        """Parse the comma-separated CORS origins into a list."""
+        return [origin.strip() for origin in self.cors_origins.split(",") if origin.strip()]
 
     @property
     def is_production(self) -> bool:

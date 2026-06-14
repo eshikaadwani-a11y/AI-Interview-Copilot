@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import List
 
-from fastapi import APIRouter, File, UploadFile, status
+from fastapi import APIRouter, File, Response, UploadFile, status
 
 from app.core.config import settings
 from app.core.deps import CurrentUser
@@ -58,6 +58,7 @@ async def get_job(job_id: str, current_user: CurrentUser) -> JobDetail:
 
 
 @router.delete("/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_job(job_id: str, current_user: CurrentUser) -> None:
+async def delete_job(job_id: str, current_user: CurrentUser) -> Response:
     """Delete a job description."""
     await job_service.delete_job(current_user.id, job_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

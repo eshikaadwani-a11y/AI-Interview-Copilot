@@ -29,7 +29,9 @@ scipy==1.14.1
 
 # ── RAG / Vector DB / Embeddings ──────────────────────────────
 chromadb==0.5.20
-sentence-transformers==3.3.1
+# NOTE: embeddings use a dependency-free local hashing embedder by default and
+# the OpenAI API when EMBEDDING_PROVIDER=openai. No sentence-transformers/torch
+# dependency is required (keeps the image small and the build fast).
 
 # ── LLM providers (optional at runtime) ───────────────────────
 openai==1.57.0
