@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import List
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Response, status
 
 from app.core.deps import CurrentUser
 from app.models.match import MatchCreate, MatchDetail, MatchSummary
@@ -34,6 +34,7 @@ async def get_match(match_id: str, current_user: CurrentUser) -> MatchDetail:
 
 
 @router.delete("/{match_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_match(match_id: str, current_user: CurrentUser) -> None:
+async def delete_match(match_id: str, current_user: CurrentUser) -> Response:
     """Delete a match."""
     await match_service.delete_match(current_user.id, match_id)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)

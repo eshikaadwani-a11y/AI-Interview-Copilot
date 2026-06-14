@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AnswerEvaluation(BaseModel):
@@ -53,6 +53,8 @@ class LearningItem(BaseModel):
 
 
 class InterviewReport(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+
     interview_id: str
     mode_label: str
     status: str
