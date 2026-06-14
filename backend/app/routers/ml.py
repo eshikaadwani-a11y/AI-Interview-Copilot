@@ -70,7 +70,13 @@ async def predict(payload: FeatureInput, current_user: CurrentUser) -> PredictRe
     """Predict candidate fit from a raw feature dict (demo/debug endpoint)."""
     vector = features_to_vector(payload.features)
     result = get_predictor().predict(vector)
-    return PredictResult(**result)
+    return PredictResult(
+        fit_score=result["score"],
+        interview_probability=result["probability"],
+        recommendation=result["recommendation"],
+        backend=result["backend"],
+        explanation=result.get("explanation", []),
+    )
 
 
 @router.get("/feature-schema", response_model=List[str])

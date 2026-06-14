@@ -40,9 +40,11 @@ def train_and_save(
     feature_names: List[str],
     models_dir: str,
     *,
+    model_name: str = "candidate_fit_predictor",
+    file_stem: str = "fit_predictor",
     random_state: int = 42,
 ) -> Dict[str, object]:
-    """Train, evaluate, and persist the candidate-fit predictor."""
+    """Train, evaluate, and persist a binary classifier (XGBoost/RandomForest)."""
     os.makedirs(models_dir, exist_ok=True)
     X_arr = np.asarray(X, dtype=float)
     y_arr = np.asarray(y, dtype=int)
@@ -110,20 +112,20 @@ def train_and_save(
         "explainer": explainer,
         "feature_names": feature_names,
     }
-    model_path = os.path.join(models_dir, "fit_predictor.joblib")
+    model_path = os.path.join(models_dir, f"{file_stem}.joblib")
     joblib.dump(artifact, model_path)
 
     metadata = {
-        "name": "candidate_fit_predictor",
+        "name": model_name,
         "version": "1.0.0",
         "backend": f"sklearn::{best_name}",
-        "model_file": "fit_predictor.joblib",
+        "model_file": f"{file_stem}.joblib",
         "feature_names": feature_names,
         "metrics": metrics,
         "cv_roc_auc": {k: round(v, 4) for k, v in cv_scores.items()},
         "feature_importance": feature_importance,
         "trained_at": datetime.now(timezone.utc).isoformat(),
     }
-    with open(os.path.join(models_dir, "metadata.json"), "w", encoding="utf-8") as fh:
+    with open(os.path.join(models_dir, f"{file_stem}_metadata.json"), "w", encoding="utf-8") as fh:
         json.dump(metadata, fh, indent=2)
     return metadata

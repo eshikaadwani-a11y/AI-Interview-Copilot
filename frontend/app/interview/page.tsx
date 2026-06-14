@@ -15,10 +15,12 @@ import { formatApiError } from "@/lib/auth";
 import {
   INTERVIEW_MODES,
   useAnswerInterview,
+  useEvaluateInterview,
   useFinishInterview,
   useStartInterview,
 } from "@/lib/interview";
 import { useResumes } from "@/lib/resumes";
+import { ReportView } from "@/components/interview/report-view";
 import type { InterviewState } from "@/lib/types";
 
 function InterviewWorkspace() {
@@ -26,6 +28,7 @@ function InterviewWorkspace() {
   const start = useStartInterview();
   const answerMut = useAnswerInterview();
   const finishMut = useFinishInterview();
+  const evaluateMut = useEvaluateInterview();
 
   const [mode, setMode] = useState("software_engineer");
   const [resumeId, setResumeId] = useState("");
@@ -79,6 +82,18 @@ function InterviewWorkspace() {
 
   // ── Completion screen ──
   if (state.finished) {
+    if (evaluateMut.data) {
+      return (
+        <div className="flex flex-col gap-5">
+          <ReportView report={evaluateMut.data} />
+          <div className="flex justify-center">
+            <Button variant="secondary" onClick={() => { setState(null); evaluateMut.reset(); }}>
+              Start another interview
+            </Button>
+          </div>
+        </div>
+      );
+    }
     return (
       <Card>
         <CardContent className="flex min-h-[260px] flex-col items-center justify-center gap-3 text-center">
@@ -86,10 +101,20 @@ function InterviewWorkspace() {
           <h2 className="text-xl font-semibold">Interview complete</h2>
           <p className="max-w-md text-sm text-muted">
             You answered {state.answered} of {state.total} questions in the{" "}
-            {state.mode_label} track. Detailed scoring and a performance report
-            arrive in Milestone 10.
+            {state.mode_label} track. Get your scored performance report and
+            interview-success prediction.
           </p>
-          <Button onClick={() => setState(null)}>Start another interview</Button>
+          <div className="flex gap-3">
+            <Button onClick={() => evaluateMut.mutate(state.id)} isLoading={evaluateMut.isPending}>
+              Evaluate my performance
+            </Button>
+            <Button variant="ghost" onClick={() => setState(null)}>
+              Start another
+            </Button>
+          </div>
+          {evaluateMut.isError && (
+            <p className="text-sm text-danger">{formatApiError(evaluateMut.error)}</p>
+          )}
         </CardContent>
       </Card>
     );

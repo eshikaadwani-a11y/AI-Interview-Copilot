@@ -110,8 +110,8 @@ def _build_prediction(features: Dict[str, float]) -> MatchPrediction:
         for c in result.get("explanation", [])
     ]
     return MatchPrediction(
-        fit_score=result["fit_score"],
-        interview_probability=result["interview_probability"],
+        fit_score=result["score"],
+        interview_probability=result["probability"],
         recommendation=result["recommendation"],
         backend=result["backend"],
         explanation=explanation,
