@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import {
+  Bot,
   Briefcase,
   FileSearch,
   GitCompare,
@@ -42,6 +43,13 @@ const upcoming = [
     description: "Ask questions grounded in your resume and the job description.",
     milestone: "Available",
     href: "/mentor",
+  },
+  {
+    icon: Bot,
+    title: "AI Interview Simulator",
+    description: "Practice realistic technical interviews with dynamic follow-ups.",
+    milestone: "Available",
+    href: "/interview",
   },
   {
     icon: GraduationCap,

@@ -136,7 +136,9 @@ UI state; Recharts for analytics; Framer Motion for transitions.
 - [x] **M5 — ML pipeline:** feature engineering, synthetic dataset, candidate-fit model (XGBoost prod + pure-Python fallback), evaluation, SHAP/explainability, model registry, `/ml` API
 - [x] **M6 — Matching engine:** `/match` (ML fit score + interview probability + explanations), skill-gap detection, prioritized recommendations, match UI (score gauge, why-this-score, gaps)
 - [x] **M7 — RAG system:** LLM provider abstraction (OpenAI/Anthropic + local fallback), local/OpenAI embeddings, ChromaDB + in-memory store, chunking, grounded retrieval, `/rag` API
-- [ ] M8 — AI mentor
+- [x] **M8 — AI mentor:** resume feedback, learning roadmap generation (persisted), RAG-grounded mentor chat, mentor UI
+- [x] **M9 — Interview simulator:** question bank, mode/category selection, dynamic follow-ups, session state machine, chat-style interview UI
+- [ ] M10 — Interview evaluation
 - [ ] M5 — ML pipeline
 - [ ] M6 — Matching engine
 - [ ] M7 — RAG system

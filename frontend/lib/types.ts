@@ -225,3 +225,58 @@ export interface IngestResponse {
   title: string | null;
   indexed_chunks: number;
 }
+
+
+// ── Interview types (Milestone 9) ─────────────────────────────
+
+export interface QuestionPublic {
+  index: number;
+  category: string;
+  difficulty: string | null;
+  text: string;
+  type: string; // "base" | "followup"
+}
+
+export interface QuestionFull extends QuestionPublic {
+  answer: string | null;
+}
+
+export interface InterviewState {
+  id: string;
+  mode: string;
+  mode_label: string;
+  status: string;
+  total: number;
+  answered: number;
+  current_index: number;
+  current_question: QuestionPublic | null;
+  finished: boolean;
+}
+
+export interface InterviewSummary {
+  id: string;
+  mode: string;
+  mode_label: string;
+  status: string;
+  total: number;
+  answered: number;
+  created_at: string;
+}
+
+export interface InterviewDetail {
+  id: string;
+  mode: string;
+  mode_label: string;
+  status: string;
+  questions: QuestionFull[];
+  created_at: string;
+  completed_at: string | null;
+}
+
+export interface InterviewStartPayload {
+  mode: string;
+  categories?: string[] | null;
+  num_questions?: number;
+  resume_id?: string | null;
+  job_id?: string | null;
+}
