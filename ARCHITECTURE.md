@@ -133,7 +133,8 @@ UI state; Recharts for analytics; Framer Motion for transitions.
 - [x] **M2 — Authentication:** JWT register/login, protected routes, `/auth/me`
 - [x] **M3 — Resume upload + parsing:** PDF upload, deterministic parser, structured profile UI
 - [x] **M4 — Job description analysis:** JD parser (required/preferred skills, responsibilities, seniority), structured viewer
-- [ ] M5 — ML pipeline
+- [x] **M5 — ML pipeline:** feature engineering, synthetic dataset, candidate-fit model (XGBoost prod + pure-Python fallback), evaluation, SHAP/explainability, model registry, `/ml` API
+- [ ] M6 — Matching engine
 - [ ] M5 — ML pipeline
 - [ ] M6 — Matching engine
 - [ ] M7 — RAG system
