@@ -92,6 +92,12 @@ async def get_resume(user_id: str, resume_id: str) -> ResumeDetail:
     return _to_detail(doc)
 
 
+async def get_resume_text(user_id: str, resume_id: str) -> tuple[str, str]:
+    """Return (filename, raw_text) for a resume owned by the user."""
+    doc = await _get_owned(user_id, resume_id)
+    return doc.get("filename", "resume"), doc.get("raw_text", "")
+
+
 async def delete_resume(user_id: str, resume_id: str) -> None:
     """Delete a resume owned by the user."""
     await _get_owned(user_id, resume_id)

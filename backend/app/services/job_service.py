@@ -101,6 +101,13 @@ async def get_job(user_id: str, job_id: str) -> JobDetail:
     return _to_detail(doc)
 
 
+async def get_job_text(user_id: str, job_id: str) -> tuple[str, str]:
+    """Return (title, raw_text) for a job owned by the user."""
+    doc = await _get_owned(user_id, job_id)
+    title = doc.get("title") or (doc.get("profile", {}) or {}).get("title") or "job"
+    return title, doc.get("raw_text", "")
+
+
 async def delete_job(user_id: str, job_id: str) -> None:
     await _get_owned(user_id, job_id)
     db = get_database()
