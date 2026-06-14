@@ -83,3 +83,39 @@ export interface ResumeDetail {
   profile: ResumeProfile;
   created_at: string;
 }
+
+
+// ── Job types (Milestone 4) ───────────────────────────────────
+
+export interface JobProfile {
+  title: string | null;
+  required_skills: string[];
+  preferred_skills: string[];
+  technologies: string[];
+  responsibilities: string[];
+  min_experience_years: number | null;
+  education_required: string | null;
+  seniority: string | null;
+}
+
+export interface JobSummary {
+  id: string;
+  title: string | null;
+  company: string | null;
+  required_skill_count: number;
+  created_at: string;
+}
+
+export interface JobDetail {
+  id: string;
+  title: string | null;
+  company: string | null;
+  profile: JobProfile;
+  created_at: string;
+}
+
+export interface JobCreatePayload {
+  title?: string | null;
+  company?: string | null;
+  description: string;
+}
