@@ -23,6 +23,10 @@ COPY . .
 # Create runtime directories used by uploads / models / vector store.
 RUN mkdir -p uploads models .chroma
 
+# Train the candidate-fit model at build time so the image ships with a
+# ready-to-serve scikit-learn/XGBoost artifact (+ metadata.json).
+RUN python -m app.ml.train
+
 EXPOSE 8000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
