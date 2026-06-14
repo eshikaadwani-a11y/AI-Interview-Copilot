@@ -134,7 +134,8 @@ UI state; Recharts for analytics; Framer Motion for transitions.
 - [x] **M3 — Resume upload + parsing:** PDF upload, deterministic parser, structured profile UI
 - [x] **M4 — Job description analysis:** JD parser (required/preferred skills, responsibilities, seniority), structured viewer
 - [x] **M5 — ML pipeline:** feature engineering, synthetic dataset, candidate-fit model (XGBoost prod + pure-Python fallback), evaluation, SHAP/explainability, model registry, `/ml` API
-- [ ] M6 — Matching engine
+- [x] **M6 — Matching engine:** `/match` (ML fit score + interview probability + explanations), skill-gap detection, prioritized recommendations, match UI (score gauge, why-this-score, gaps)
+- [ ] M7 — RAG system
 - [ ] M5 — ML pipeline
 - [ ] M6 — Matching engine
 - [ ] M7 — RAG system

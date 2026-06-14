@@ -18,7 +18,7 @@ from app.core.errors import register_exception_handlers
 from app.core.logging import configure_logging, get_logger
 from app.core.middleware import RequestContextMiddleware
 from app.db.mongo import close_mongo_connection, connect_to_mongo
-from app.routers import auth, health, jobs, ml, resumes
+from app.routers import auth, health, jobs, match, ml, resumes
 
 logger = get_logger(__name__)
 
@@ -70,6 +70,7 @@ def create_app() -> FastAPI:
     app.include_router(resumes.router, prefix=settings.api_v1_prefix)
     app.include_router(jobs.router, prefix=settings.api_v1_prefix)
     app.include_router(ml.router, prefix=settings.api_v1_prefix)
+    app.include_router(match.router, prefix=settings.api_v1_prefix)
 
     @app.get("/")
     async def root() -> dict[str, str]:
