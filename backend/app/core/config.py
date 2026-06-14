@@ -8,10 +8,10 @@ defaults, and a single source of truth that the whole app imports.
 from __future__ import annotations
 
 from functools import lru_cache
-from typing import List
+from typing import Annotated, List
 
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
@@ -35,7 +35,11 @@ class Settings(BaseSettings):
     port: int = 8000
 
     # ── CORS ──────────────────────────────────────────────────
-    cors_origins: List[str] = Field(default=["http://localhost:3000"])
+    # ``NoDecode`` disables pydantic-settings' automatic JSON decoding so the
+    # validator below can accept a plain or comma-separated string from env
+    # (e.g. CORS_ORIGINS=http://localhost:3000,https://app.example.com) as well
+    # as a JSON array. Without this, a non-JSON env value raises a parse error.
+    cors_origins: Annotated[List[str], NoDecode] = Field(default=["http://localhost:3000"])
 
     # ── MongoDB ───────────────────────────────────────────────
     mongodb_uri: str = Field(default="mongodb://localhost:27017")
@@ -51,10 +55,10 @@ class Settings(BaseSettings):
     chroma_collection: str = Field(default="aic_documents")
 
     # ── Embeddings ────────────────────────────────────────────
-    # "local" uses sentence-transformers (offline friendly);
+    # "local" uses a dependency-free hashing embedder (offline friendly);
     # "openai" uses the OpenAI embeddings API when a key is present.
     embedding_provider: str = Field(default="local")
-    embedding_model_local: str = "all-MiniLM-L6-v2"
+    embedding_model_local: str = "local-hash-256"
     embedding_model_openai: str = "text-embedding-3-small"
 
     # ── LLM providers ─────────────────────────────────────────
