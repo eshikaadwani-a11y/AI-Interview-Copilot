@@ -2,6 +2,8 @@
 
 > Your personal recruiter, interviewer, and mentor — resume analysis, **real ML** candidate-fit prediction, a RAG-powered mentor, and realistic AI interview simulation.
 
+![CI](https://github.com/eshikaadwani-a11y/AI-Interview-Copilot/actions/workflows/ci.yml/badge.svg)
+
 AI Interview Copilot helps students and job seekers prepare for technical
 interviews. Upload a resume and a job description, and the system analyzes the
 fit using **actual machine-learning models** (scikit-learn / XGBoost with SHAP
@@ -115,18 +117,42 @@ every feature remains demonstrable offline.
 
 ## 🧭 Development Roadmap (Milestones)
 
-1. **Foundation** ✅ — project setup, Docker, folder structure
-2. Authentication — JWT, registration, login, protected routes
-3. Resume upload + parsing
-4. Job description analysis
-5. **ML pipeline** — dataset, features, candidate-fit model, evaluation
-6. Resume matching engine
-7. RAG system (ChromaDB)
-8. AI mentor (feedback, roadmap)
-9. Interview simulator
-10. Interview evaluation
-11. Analytics dashboard
-12. Production release (v1.0)
+All 12 milestones are complete (**v1.0**):
+
+1. ✅ **Foundation** — project setup, Docker, folder structure
+2. ✅ **Authentication** — JWT, registration, login, protected routes
+3. ✅ **Resume upload + parsing**
+4. ✅ **Job description analysis**
+5. ✅ **ML pipeline** — dataset, features, candidate-fit model, evaluation
+6. ✅ **Resume matching engine**
+7. ✅ **RAG system** (ChromaDB / local fallback)
+8. ✅ **AI mentor** (feedback, roadmap, grounded chat)
+9. ✅ **Interview simulator**
+10. ✅ **Interview evaluation** (Interview Success Predictor + explanations)
+11. ✅ **Analytics dashboard**
+12. ✅ **Production release** (CI, docs, deployment)
+
+---
+
+## 🧪 Testing
+
+```bash
+cd backend && pip install -r requirements-ci.txt && pytest
+```
+
+Test suites cover resume/JD parsing, both ML models (feature engineering,
+dataset, metrics, training), RAG building blocks, mentor logic, interview
+selection, and answer evaluation. The frontend is gated by `tsc` + ESLint +
+`next build`.
+
+## 🚢 Deployment
+
+See **[DEPLOYMENT.md](./DEPLOYMENT.md)** for local, Docker, and production
+instructions, plus ML model details and CI.
+
+## 📈 Changelog
+
+See **[CHANGELOG.md](./CHANGELOG.md)**.
 
 ---
 

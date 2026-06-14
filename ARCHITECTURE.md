@@ -149,7 +149,7 @@ UI state; Recharts for analytics; Framer Motion for transitions.
 - [x] **M9 — Interview simulator:** question bank, mode/category selection, dynamic follow-ups, session state machine, chat-style interview UI
 - [x] **M10 — Interview evaluation:** per-answer rubric scoring, Interview Success Predictor (Model 2), performance report + success-probability UI
 - [x] **M11 — Analytics dashboard:** `/dashboard/summary` aggregation, Recharts trends/radar/skill-gap, readiness gauges
-- [ ] M12 — Production release
+- [x] **M12 — Production release:** CI (pytest + tsc/lint/build), deployment guide, changelog, v1.0
 - [ ] M5 — ML pipeline
 - [ ] M6 — Matching engine
 - [ ] M7 — RAG system
