@@ -119,3 +119,56 @@ export interface JobCreatePayload {
   company?: string | null;
   description: string;
 }
+
+
+// ── Match types (Milestone 6) ─────────────────────────────────
+
+export interface Contribution {
+  feature: string;
+  label: string;
+  value: number;
+  contribution: number;
+}
+
+export interface MatchPrediction {
+  fit_score: number;
+  interview_probability: number;
+  recommendation: string;
+  backend: string;
+  explanation: Contribution[];
+}
+
+export interface SkillGap {
+  missing_required: string[];
+  missing_preferred: string[];
+  strengths: string[];
+  weak_areas: string[];
+}
+
+export interface RecommendationItem {
+  skill: string;
+  priority: string;
+  reason: string;
+}
+
+export interface MatchSummary {
+  id: string;
+  resume_filename: string;
+  job_title: string | null;
+  fit_score: number;
+  recommendation: string;
+  created_at: string;
+}
+
+export interface MatchDetail {
+  id: string;
+  resume_id: string;
+  job_id: string;
+  resume_filename: string;
+  job_title: string | null;
+  features: Record<string, number>;
+  prediction: MatchPrediction;
+  skill_gap: SkillGap;
+  recommendations: RecommendationItem[];
+  created_at: string;
+}

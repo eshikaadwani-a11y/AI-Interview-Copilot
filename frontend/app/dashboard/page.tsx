@@ -33,8 +33,8 @@ const upcoming = [
     icon: GitCompare,
     title: "Candidate Matching",
     description: "Compare your resume to a job description with real ML scoring.",
-    milestone: "Milestone 5–6",
-    href: null,
+    milestone: "Available",
+    href: "/match",
   },
   {
     icon: GraduationCap,
