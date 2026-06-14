@@ -49,7 +49,9 @@ def generate_interview_dataset(
         overall = 0.4 * technical + 0.2 * communication + 0.25 * completeness + 0.15 * confidence
 
         completion_ratio = _clamp01(rng.gauss(0.6 + 0.4 * ability, 0.15))
-        resume_fit = _clamp01(rng.gauss(ability, 0.18))
+        match_score = _clamp01(rng.gauss(ability, 0.18))
+        resume_experience_months = max(0.0, rng.gauss(ability * 90, 18))  # up to ~10y
+        resume_skill_count = max(0, int(rng.gauss(ability * 18 + 4, 4)))
 
         aggregate = {
             "technical": technical,
@@ -58,14 +60,18 @@ def generate_interview_dataset(
             "confidence": confidence,
             "overall": overall,
         }
-        feats = compute_interview_features(aggregate, completion_ratio, resume_fit)
+        feats = compute_interview_features(
+            aggregate, completion_ratio, match_score,
+            resume_experience_months, resume_skill_count,
+        )
         vec = interview_features_to_vector(feats)
 
         logit = (
-            2.6 * (feats["avg_overall"] - 0.55)
-            + 1.3 * (feats["avg_technical"] - 0.55)
-            + 0.9 * (feats["resume_fit"] - 0.5)
-            + 0.6 * (feats["completion_ratio"] - 0.6)
+            2.4 * (feats["avg_overall"] - 0.55)
+            + 1.2 * (feats["avg_technical"] - 0.55)
+            + 1.0 * (feats["match_score"] - 0.5)
+            + 0.5 * (feats["completion_ratio"] - 0.6)
+            + 0.4 * (feats["resume_experience"] - 0.4)
             + rng.gauss(0, 0.45)
         )
         prob = _sigmoid(3.0 * logit)

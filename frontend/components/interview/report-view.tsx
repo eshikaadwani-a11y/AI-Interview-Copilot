@@ -1,14 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AlertTriangle, CheckCircle2, Lightbulb } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ExternalLink, GraduationCap, Lightbulb } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScoreGauge } from "@/components/match/score-gauge";
+import { ExplanationPanel } from "@/components/match/explanation-panel";
 import type { AggregateScores, InterviewReport } from "@/lib/types";
 
 const DIMENSIONS: { key: keyof AggregateScores; label: string }[] = [
-  { key: "technical", label: "Technical" },
+  { key: "technical", label: "Technical Accuracy" },
   { key: "communication", label: "Communication" },
   { key: "completeness", label: "Completeness" },
   { key: "confidence", label: "Confidence" },
@@ -29,40 +30,41 @@ export function ReportView({ report }: { report: InterviewReport }) {
       animate={{ opacity: 1, y: 0 }}
       className="flex flex-col gap-5"
     >
-      {/* Headline: success probability + overall */}
-      <Card>
-        <CardContent className="flex flex-col items-center gap-6 py-6 sm:flex-row sm:justify-around">
-          <ScoreGauge score={successPct} label="Success likelihood" />
-          <div className="flex flex-col items-center gap-2 sm:items-start">
+      {/* Dual gauges: overall score + success probability */}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Card>
+          <CardContent className="flex flex-col items-center gap-2 py-6">
+            <ScoreGauge score={report.aggregate.overall} label="Overall Score" />
+            <p className="text-xs text-muted">
+              {report.answered}/{report.total} answered · {report.mode_label}
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="flex flex-col items-center gap-2 py-6">
+            <ScoreGauge score={successPct} label="Success Probability" />
             <Badge tone={successPct >= 70 ? "success" : successPct >= 45 ? "warning" : "danger"}>
               {report.success_label}
             </Badge>
-            <p className="text-sm text-muted">
-              Overall score:{" "}
-              <span className="font-medium text-foreground">{report.aggregate.overall}</span>/100
-            </p>
             <p className="text-xs text-muted">
-              {report.answered}/{report.total} answered · {report.mode_label} · model:{" "}
-              {report.model_backend}
+              Confidence {Math.round(report.prediction_confidence * 100)}% · model{" "}
+              {report.model_version ?? "?"} ({report.model_backend})
             </p>
-            <p className="max-w-xs text-xs text-muted">
-              Predicted by the Interview Success model from your answer scores and resume fit.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
 
-      {/* Dimension breakdown */}
+      {/* Dimension breakdown with explanations */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Score breakdown</CardTitle>
+          <CardTitle className="text-base">Category scores</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
           {DIMENSIONS.map((d) => {
             const v = report.aggregate[d.key];
             return (
               <div key={d.key} className="flex items-center gap-3">
-                <span className="w-32 shrink-0 text-sm text-muted">{d.label}</span>
+                <span className="w-40 shrink-0 text-sm text-muted">{d.label}</span>
                 <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-surface-2">
                   <motion.div
                     className="h-2.5 rounded-full"
@@ -76,17 +78,62 @@ export function ReportView({ report }: { report: InterviewReport }) {
               </div>
             );
           })}
+          {Object.keys(report.category_scores).length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-2 border-t border-border pt-3">
+              {Object.entries(report.category_scores).map(([cat, score]) => (
+                <Badge key={cat} tone={score >= 70 ? "success" : score >= 50 ? "warning" : "danger"}>
+                  {cat}: {score}
+                </Badge>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
 
+      {/* Why this prediction (Model 2 feature contributions) */}
+      {report.success_explanation.length > 0 && (
+        <ExplanationPanel
+          title="Why this prediction"
+          contributions={report.success_explanation}
+        />
+      )}
+
       {/* Strengths / weaknesses / suggestions */}
       <div className="grid gap-4 md:grid-cols-3">
-        <FeedbackList icon={<CheckCircle2 className="h-4 w-4 text-success" />} title="Strengths" items={report.strengths} />
-        <FeedbackList icon={<AlertTriangle className="h-4 w-4 text-warning" />} title="Weaknesses" items={report.weaknesses} />
-        <FeedbackList icon={<Lightbulb className="h-4 w-4 text-primary" />} title="Suggestions" items={report.suggestions} />
+        <FeedbackList icon={<CheckCircle2 className="h-4 w-4 text-success" />} title="Strength areas" items={report.strengths} />
+        <FeedbackList icon={<AlertTriangle className="h-4 w-4 text-warning" />} title="Weak areas" items={report.weaknesses} />
+        <FeedbackList icon={<Lightbulb className="h-4 w-4 text-primary" />} title="Improvement suggestions" items={report.suggestions} />
       </div>
 
-      {/* Per-question */}
+      {/* Recommended learning plan */}
+      {report.recommended_learning.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <GraduationCap className="h-4 w-4 text-primary" /> Recommended learning plan
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-2">
+            {report.recommended_learning.map((item) => (
+              <a
+                key={item.topic}
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center justify-between gap-3 rounded-lg border border-border bg-surface-2/40 px-3 py-2 hover:border-primary/40"
+              >
+                <div>
+                  <p className="text-sm font-medium capitalize">{item.topic}</p>
+                  <p className="text-xs text-muted">{item.title}</p>
+                </div>
+                <ExternalLink className="h-4 w-4 text-primary" />
+              </a>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Per-question feedback with reasons */}
       <Card>
         <CardHeader>
           <CardTitle className="text-base">Per-question feedback</CardTitle>
@@ -100,15 +147,40 @@ export function ReportView({ report }: { report: InterviewReport }) {
                 <span className="ml-auto text-sm font-semibold">{q.evaluation!.score}/100</span>
               </div>
               <p className="text-sm font-medium">{q.question}</p>
-              {q.answer && <p className="mt-1 text-xs text-muted line-clamp-3">{q.answer}</p>}
-              {q.evaluation!.suggestions.length > 0 && (
-                <p className="mt-2 text-xs text-primary">💡 {q.evaluation!.suggestions[0]}</p>
-              )}
+              <div className="mt-2 grid gap-2 sm:grid-cols-2">
+                <ScoreLine label="Technical" value={q.evaluation!.technical} reasons={q.evaluation!.explanations.technical} />
+                <ScoreLine label="Communication" value={q.evaluation!.communication} reasons={q.evaluation!.explanations.communication} />
+                <ScoreLine label="Completeness" value={q.evaluation!.completeness} reasons={q.evaluation!.explanations.completeness} />
+                <ScoreLine label="Confidence" value={q.evaluation!.confidence} reasons={q.evaluation!.explanations.confidence} />
+              </div>
             </div>
           ))}
         </CardContent>
       </Card>
     </motion.div>
+  );
+}
+
+function ScoreLine({ label, value, reasons }: { label: string; value: number; reasons?: string[] }) {
+  return (
+    <div className="rounded-md bg-background/40 p-2">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-medium text-muted">{label}</span>
+        <span className="text-xs font-semibold" style={{ color: barColor(value) }}>
+          {value}
+        </span>
+      </div>
+      {reasons && reasons.length > 0 && (
+        <ul className="mt-1 space-y-0.5">
+          {reasons.slice(0, 4).map((r, i) => (
+            <li key={i} className="text-[11px] leading-snug text-muted">
+              {r.startsWith("Missed") ? "✗ " : r.startsWith("Mentioned") ? "✓ " : "• "}
+              {r}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
 

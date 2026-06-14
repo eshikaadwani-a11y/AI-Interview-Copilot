@@ -8,14 +8,20 @@ import type { Contribution } from "@/lib/types";
  * bar (green = pushes the score up, red = pulls it down) — a human-readable
  * view of the model's SHAP / linear contributions.
  */
-export function ExplanationPanel({ contributions }: { contributions: Contribution[] }) {
+export function ExplanationPanel({
+  contributions,
+  title = "Why this score",
+}: {
+  contributions: Contribution[];
+  title?: string;
+}) {
   const top = contributions.slice(0, 8);
   const max = Math.max(0.0001, ...top.map((c) => Math.abs(c.contribution)));
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Why this score</CardTitle>
+        <CardTitle className="text-base">{title}</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-3">
         {top.map((c) => {

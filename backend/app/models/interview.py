@@ -14,6 +14,9 @@ class InterviewStart(BaseModel):
     num_questions: int = Field(default=6, ge=3, le=15)
     resume_id: Optional[str] = None
     job_id: Optional[str] = None
+    # Extensibility: "technical" today; "coding" / "voice" / "company" planned.
+    interview_type: str = Field(default="technical")
+    company: Optional[str] = Field(default=None, max_length=120)
 
 
 class AnswerRequest(BaseModel):

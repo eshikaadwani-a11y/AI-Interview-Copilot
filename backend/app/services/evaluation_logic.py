@@ -90,6 +90,10 @@ def evaluate_answer(category: str, question: str, answer: str) -> Dict[str, obje
         0.40 * technical + 0.20 * comm + 0.25 * completeness + 0.15 * confidence
     )
 
+    missed = [kw for kw in expected if kw not in matched]
+    explanations = _per_dimension_explanations(
+        matched, missed, word_count, sentences, lower, technical, comm, completeness, confidence
+    )
     strengths, weaknesses, suggestions = _qualitative(
         category, technical, comm, completeness, confidence, matched, expected, word_count
     )
@@ -101,9 +105,55 @@ def evaluate_answer(category: str, question: str, answer: str) -> Dict[str, obje
         "confidence": round(confidence, 1),
         "score": round(overall, 1),
         "matched_concepts": matched,
+        "missed_concepts": missed[:6],
+        "explanations": explanations,
         "strengths": strengths,
         "weaknesses": weaknesses,
         "suggestions": suggestions,
+    }
+
+
+def _per_dimension_explanations(
+    matched, missed, word_count, sentences, lower, technical, comm, completeness, confidence
+) -> Dict[str, List[str]]:
+    """Concrete, recruiter-readable reasons for each dimension score."""
+    tech_reasons: List[str] = [f"Mentioned {c}" for c in matched[:5]]
+    tech_reasons += [f"Missed {c}" for c in missed[:3]]
+    if not tech_reasons:
+        tech_reasons = ["No expected technical concepts detected"]
+
+    comm_reasons: List[str] = []
+    if word_count < 15:
+        comm_reasons.append("Answer was very brief")
+    else:
+        comm_reasons.append(f"{len(sentences)} sentence(s), ~{word_count} words")
+    if any(c in lower for c in _CONNECTORS):
+        comm_reasons.append("Used logical connectors (e.g., 'because', 'for example')")
+    else:
+        comm_reasons.append("Few logical connectors linking ideas")
+
+    comp_reasons: List[str] = [f"Covered {len(matched)} key concept(s)"]
+    if word_count < 50:
+        comp_reasons.append("Limited elaboration / depth")
+    else:
+        comp_reasons.append("Reasonable depth of explanation")
+
+    conf_reasons: List[str] = []
+    hedges_found = sorted({h for h in _HEDGES if h in lower})
+    if hedges_found:
+        conf_reasons.append("Hedging detected: " + ", ".join(f"'{h}'" for h in hedges_found[:3]))
+    if any(a in lower for a in _ASSERTIVE):
+        conf_reasons.append("Assertive, reasoned phrasing")
+    if word_count < 15:
+        conf_reasons.append("Too short to convey confidence")
+    if not conf_reasons:
+        conf_reasons.append("Neutral tone")
+
+    return {
+        "technical": tech_reasons,
+        "communication": comm_reasons,
+        "completeness": comp_reasons,
+        "confidence": conf_reasons,
     }
 
 
@@ -143,3 +193,19 @@ def _qualitative(category, technical, comm, completeness, confidence, matched, e
         suggestions.append("Solid answer — add a concrete example to make it stand out.")
 
     return strengths, weaknesses, suggestions
+
+
+# ── Evaluator registry (extensibility) ───────────────────────────────────
+# Today only text answers are scored. Coding-submission scoring (run tests,
+# measure complexity/correctness) and voice scoring (transcribe, add prosody/
+# fluency dimensions) can register here and reuse the same report pipeline.
+ANSWER_EVALUATORS = {
+    "text": evaluate_answer,
+    # "coding": evaluate_code_submission,   # planned
+    # "voice":  evaluate_voice_answer,      # planned
+}
+
+
+def get_evaluator(answer_type: str = "text"):
+    """Return the scoring function for an answer modality (defaults to text)."""
+    return ANSWER_EVALUATORS.get(answer_type, evaluate_answer)
