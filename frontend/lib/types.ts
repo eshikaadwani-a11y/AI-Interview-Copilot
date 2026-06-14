@@ -350,3 +350,47 @@ export interface InterviewReport {
   recommended_learning: LearningItem[];
   created_at: string;
 }
+
+
+// ── Dashboard analytics types (Milestone 11) ──────────────────
+
+export interface DashboardCounts {
+  resumes: number;
+  jobs: number;
+  matches: number;
+  interviews: number;
+  roadmaps: number;
+}
+
+export interface LatestMatch {
+  id: string;
+  job_title: string | null;
+  fit_score: number;
+  interview_probability: number;
+  recommendation: string;
+}
+
+export interface TrendPoint {
+  label: string;
+  value: number;
+  date: string;
+}
+
+export interface SkillCount {
+  skill: string;
+  count: number;
+}
+
+export interface DashboardSummary {
+  counts: DashboardCounts;
+  hiring_probability: number | null;
+  interview_readiness: number | null;
+  success_probability: number | null;
+  latest_match: LatestMatch | null;
+  skill_gap: Record<string, number>;
+  top_missing_skills: SkillCount[];
+  match_trend: TrendPoint[];
+  interview_trend: TrendPoint[];
+  category_scores: Record<string, number>;
+  recommended_focus: string[];
+}
