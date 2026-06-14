@@ -1,11 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AlertTriangle, CheckCircle2, Target, TrendingUp } from "lucide-react";
+import { AlertTriangle, CheckCircle2, GraduationCap, Target, TrendingUp } from "lucide-react";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScoreGauge } from "@/components/match/score-gauge";
 import { ExplanationPanel } from "@/components/match/explanation-panel";
+import { RoadmapView } from "@/components/mentor/roadmap-view";
+import { useGenerateRoadmap } from "@/lib/mentor";
 import type { MatchDetail } from "@/lib/types";
 
 function recommendationTone(rec: string): "success" | "warning" | "danger" {
@@ -16,6 +20,7 @@ function recommendationTone(rec: string): "success" | "warning" | "danger" {
 
 export function MatchResult({ match }: { match: MatchDetail }) {
   const { prediction, skill_gap, recommendations } = match;
+  const roadmap = useGenerateRoadmap();
 
   return (
     <motion.div
@@ -114,6 +119,31 @@ export function MatchResult({ match }: { match: MatchDetail }) {
           </CardContent>
         </Card>
       )}
+      {/* Learning roadmap */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <GraduationCap className="h-4 w-4 text-primary" /> Learning roadmap
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          {!roadmap.data ? (
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm text-muted">
+                Generate a personalized weekly plan to close your skill gaps.
+              </p>
+              <Button
+                onClick={() => roadmap.mutate(match.id)}
+                isLoading={roadmap.isPending}
+              >
+                Generate roadmap
+              </Button>
+            </div>
+          ) : (
+            <RoadmapView roadmap={roadmap.data} />
+          )}
+        </CardContent>
+      </Card>
     </motion.div>
   );
 }

@@ -2,20 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Trash2 } from "lucide-react";
+import { FileText, Sparkles, Trash2 } from "lucide-react";
 import { Protected } from "@/components/auth/protected";
 import { TopBar } from "@/components/layout/top-bar";
 import { UploadDropzone } from "@/components/resume/upload-dropzone";
 import { ResumeProfileView } from "@/components/resume/resume-profile-view";
+import { FeedbackPanel } from "@/components/mentor/feedback-panel";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useDeleteResume, useResume, useResumes } from "@/lib/resumes";
+import { useResumeFeedback } from "@/lib/mentor";
 
 function ResumeWorkspace() {
   const { data: resumes, isLoading } = useResumes();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { data: detail } = useResume(selectedId);
   const deleteResume = useDeleteResume();
+  const feedback = useResumeFeedback();
 
   // Auto-select the most recent resume once the list loads.
   useEffect(() => {
@@ -93,7 +96,19 @@ function ResumeWorkspace() {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
+                className="flex flex-col gap-5"
               >
+                <div className="flex justify-end">
+                  <Button
+                    variant="secondary"
+                    onClick={() => feedback.mutate(detail.id)}
+                    isLoading={feedback.isPending}
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    Get AI feedback
+                  </Button>
+                </div>
+                {feedback.data && <FeedbackPanel feedback={feedback.data} />}
                 <ResumeProfileView profile={detail.profile} />
               </motion.div>
             ) : (

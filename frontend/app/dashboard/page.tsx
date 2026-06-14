@@ -18,7 +18,7 @@ const upcoming = [
   {
     icon: FileSearch,
     title: "Resume Analysis",
-    description: "Upload your resume to extract a structured profile.",
+    description: "Upload your resume to extract a structured profile + AI feedback.",
     milestone: "Available",
     href: "/resume",
   },
@@ -37,18 +37,18 @@ const upcoming = [
     href: "/match",
   },
   {
-    icon: GraduationCap,
-    title: "Learning Roadmap",
-    description: "Get a personalized plan to close your skill gaps.",
-    milestone: "Milestone 8",
-    href: null,
+    icon: MessagesSquare,
+    title: "AI Mentor",
+    description: "Ask questions grounded in your resume and the job description.",
+    milestone: "Available",
+    href: "/mentor",
   },
   {
-    icon: MessagesSquare,
-    title: "AI Interview Simulator",
-    description: "Practice realistic interviews with dynamic follow-ups.",
-    milestone: "Milestone 9",
-    href: null,
+    icon: GraduationCap,
+    title: "Learning Roadmap",
+    description: "Generate a weekly plan to close your skill gaps from a match.",
+    milestone: "Available",
+    href: "/match",
   },
 ];
 
